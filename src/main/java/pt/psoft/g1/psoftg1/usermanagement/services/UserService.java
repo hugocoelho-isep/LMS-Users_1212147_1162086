@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
+import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.repositories.ForbiddenNameRepository;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 import pt.psoft.g1.psoftg1.usermanagement.api.UserViewAMQP;
@@ -41,6 +42,7 @@ import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.publishers.UserEventsPublisher;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -150,7 +152,43 @@ public class UserService implements UserDetailsService {
         final User user = userRepo.getById(id);
         userEditMapper.update(request, user);
 
-        return userRepo.save(user);
+        User updatedUser = userRepo.save(user);
+
+        if( updatedUser!=null ) {
+            userEventsPublisher.sendUserUpdated(updatedUser);
+        }
+
+        return updatedUser;
+    }
+
+    @Transactional
+    public User update(final UserViewAMQP userViewAMQP) {
+        final Long version = userViewAMQP.getVersion();
+        final Long id = userViewAMQP.getId();
+        final String name = userViewAMQP.getName();
+        final String username = userViewAMQP.getUsername();
+        final String password = userViewAMQP.getPassword();
+
+
+        final User user = userRepo.getById(id);
+
+
+        User updatedUser =  update(user, version, name, username, password);
+
+        return updatedUser;
+    }
+
+    private User update( User user,
+                         Long currentVersion,
+                         String name,
+                         String username,
+                         String password) {
+
+        user.applyPatch(currentVersion, name, username, password);
+
+        User updatedBook = userRepo.save(user);
+
+        return updatedBook;
     }
 
     @Transactional
@@ -160,6 +198,26 @@ public class UserService implements UserDetailsService {
         // user.setUsername(user.getUsername().replace("@", String.format("_%s@",
         // user.getId().toString())));
         user.setEnabled(false);
+
+        User deletedUser = userRepo.save(user);
+
+        if( deletedUser!=null ) {
+            userEventsPublisher.sendUserDeleted(deletedUser);
+        }
+
+        return deletedUser;
+    }
+
+    @Transactional
+    public User delete(final UserViewAMQP userViewAMQP) {
+        final Long id = userViewAMQP.getId();
+
+        final User user = userRepo.getById(id);
+
+        // user.setUsername(user.getUsername().replace("@", String.format("_%s@",
+        // user.getId().toString())));
+        user.setEnabled(false);
+
         return userRepo.save(user);
     }
 

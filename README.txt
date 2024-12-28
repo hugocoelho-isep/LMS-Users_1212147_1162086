@@ -29,3 +29,25 @@ Running:
     (6 rows)
     postgres=# exit
 > docker compose up
+
+
+
+Using docker stack
+
+Create a network:
+> docker network create --driver=overlay --attachable lms_overlay_attachable_network
+
+Init:
+> docker swarm init
+
+Deploy:
+> docker stack deploy -c docker-stack.yml lmsusers
+
+Remove:
+> docker stack rm lmsusers
+
+Script to create databases and lmsusers service:
+> ./run.sh
+
+Script to remove databases and lmsusers service:
+> ./shutdown.sh

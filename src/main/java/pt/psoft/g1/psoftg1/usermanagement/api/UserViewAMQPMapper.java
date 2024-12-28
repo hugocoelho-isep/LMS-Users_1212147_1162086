@@ -10,13 +10,14 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class UserViewAMQPMapper extends MapperInterface {
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "username", source = "username")
     @Mapping(target = "password", source = "password")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "version", source = "version")
 
     public UserViewAMQP toUserViewAMQP(User user){
-        return new UserViewAMQP(user.getUsername(), user.getVersion(), user.getPassword(), user.getName().toString(), user.getAuthorities().iterator().next().getAuthority());
+        return new UserViewAMQP(user.getId(), user.getUsername(), user.getVersion(), user.getPassword(), user.getName().toString(), user.getAuthorities().iterator().next().getAuthority());
     };
 
     public abstract List<UserViewAMQP> toUserViewAMQP(List<User> userList);

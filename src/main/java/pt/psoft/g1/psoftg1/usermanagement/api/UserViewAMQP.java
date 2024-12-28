@@ -19,6 +19,10 @@ import java.util.Set;
 @Data
 @Schema(description = "A User form AMQP communication")
 public class UserViewAMQP {
+    @Setter
+    @Getter
+    private Long id;
+
     @NonNull
     @NotBlank
     @Email
@@ -48,11 +52,13 @@ public class UserViewAMQP {
 
     @JsonCreator
     public UserViewAMQP(
+            @JsonProperty("id") Long id,
             @JsonProperty("username") String username,
             @JsonProperty("version") long version,
             @JsonProperty("password") String password,
             @JsonProperty("name") String name,
             @JsonProperty("role") String role) {
+        this.id = id;
         this.username = username;
         this.version = version;
         this.password = password;

@@ -21,7 +21,7 @@ public class RabbitmqClientConfig {
 
         @Bean(name = "autoDeleteQueue_User_Created")
         public Queue autoDeleteQueue_User_Created() {
-            System.out.println("autoDeleteQueue_Book_Created created!");
+            System.out.println("autoDeleteQueue_User_Created created!");
             return new AnonymousQueue();
         }
 
@@ -43,21 +43,21 @@ public class RabbitmqClientConfig {
                     .with(UserEvents.USER_CREATED);
         }
 
-//        @Bean
-//        public Binding binding2(DirectExchange direct,
-//                                Queue autoDeleteQueue_User_Updated) {
-//            return BindingBuilder.bind(autoDeleteQueue_User_Updated)
-//                    .to(direct)
-//                    .with(UserEvents.USER_UPDATED);
-//        }
-//
-//        @Bean
-//        public Binding binding3(DirectExchange direct,
-//                                Queue autoDeleteQueue_User_Deleted) {
-//            return BindingBuilder.bind(autoDeleteQueue_User_Deleted)
-//                    .to(direct)
-//                    .with(UserEvents.USER_DELETED);
-//        }
+        @Bean
+        public Binding binding2(DirectExchange direct,
+                                Queue autoDeleteQueue_User_Updated) {
+            return BindingBuilder.bind(autoDeleteQueue_User_Updated)
+                    .to(direct)
+                    .with(UserEvents.USER_UPDATED);
+        }
+
+        @Bean
+        public Binding binding3(DirectExchange direct,
+                                Queue autoDeleteQueue_User_Deleted) {
+            return BindingBuilder.bind(autoDeleteQueue_User_Deleted)
+                    .to(direct)
+                    .with(UserEvents.USER_DELETED);
+        }
 
         @Bean
         public UserEventRabbitmqReceiver receiver(UserService userService, @Qualifier("autoDeleteQueue_User_Created") Queue autoDeleteQueue_User_Created) {

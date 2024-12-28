@@ -31,6 +31,16 @@ public class UserEventsRabbitmqPublisherImpl implements UserEventsPublisher {
         sendUserEvent(user, user.getVersion(), UserEvents.USER_CREATED);
     }
 
+    @Override
+    public void sendUserUpdated(User user) {
+        sendUserEvent(user, user.getVersion(), UserEvents.USER_UPDATED);
+    }
+
+    @Override
+    public void sendUserDeleted(User user) {
+        sendUserEvent(user, user.getVersion(), UserEvents.USER_DELETED);
+    }
+
 
     public void sendUserEvent(User user, Long currentVersion, String userEventType) {
 

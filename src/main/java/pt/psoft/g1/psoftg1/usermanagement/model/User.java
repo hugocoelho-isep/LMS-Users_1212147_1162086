@@ -22,6 +22,8 @@ package pt.psoft.g1.psoftg1.usermanagement.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -29,6 +31,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import org.hibernate.StaleObjectStateException;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -167,6 +170,28 @@ public class User implements UserDetails {
         Password passwordCheck = new Password(password);
         final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         this.password = passwordEncoder.encode(password);
+    }
+
+    public void applyPatch(final Long desiredVersion,
+                           final String name,
+                           final String username,
+                           final String password) {
+
+        if (!Objects.equals(this.version, desiredVersion))
+            throw new StaleObjectStateException("Object was already modified by another user", this.id);
+
+        if (name != null) {
+            setName(name);
+        }
+
+        if (username != null) {
+            setUsername(username);
+        }
+
+        if (username != null) {
+            setPassword(username);
+        }
+
     }
 
     public void addAuthority(final Role r) {
