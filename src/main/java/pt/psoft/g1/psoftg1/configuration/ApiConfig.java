@@ -12,6 +12,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import pt.psoft.g1.psoftg1.shared.services.FileStorageProperties;
 
 /**
  *
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
  *
  */
 @Configuration
+@EnableConfigurationProperties({ FileStorageProperties.class })
 public class ApiConfig {
 
     /*
