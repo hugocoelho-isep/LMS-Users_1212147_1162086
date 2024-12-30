@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.usermanagement.api.UserViewAMQP;
 import pt.psoft.g1.psoftg1.usermanagement.api.UserViewAMQPMapper;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
-import pt.psoft.g1.psoftg1.usermanagement.model.UserEvents;
+import pt.psoft.g1.psoftg1.shared.model.UserEvents;
 import pt.psoft.g1.psoftg1.usermanagement.publishers.UserEventsPublisher;
 
 @Service
