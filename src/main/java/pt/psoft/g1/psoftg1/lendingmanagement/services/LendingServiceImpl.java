@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingViewAMQP;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
@@ -27,6 +28,16 @@ public class LendingServiceImpl implements LendingService{
     @Override
     public Optional<Lending> findByLendingNumber(String lendingNumber){
         return lendingRepository.findByLendingNumber(lendingNumber);
+    }
+
+    @Override
+    public Lending create(LendingViewAMQP lendingViewAMQP) {
+        return null;
+    }
+
+    @Override
+    public Lending setReturned(LendingViewAMQP lendingViewAMQP) {
+        return null;
     }
 
 //    @Override

@@ -37,15 +37,15 @@ public abstract class ReaderMapper {
 
 //    @Mapping(target = "photo", source = "photoURI")
 //    @Mapping(target = "interestList", source = "interestList")
-    public ReaderDetails createReaderDetails(int readerNumber, Reader reader, ReaderViewAMQP ReaderViewAMQP){
+    public ReaderDetails createReaderDetails(int readerNumber, Reader reader, ReaderViewAMQP readerViewAMQP){
         ReaderDetails rd = new ReaderDetails(
                 readerNumber,
                 reader,
-                ReaderViewAMQP.getBirthDate(),
-                ReaderViewAMQP.getPhoneNumber(),
-                ReaderViewAMQP.isGdpr(),
-                ReaderViewAMQP.isMarketing(),
-                ReaderViewAMQP.isThirdParty(),
+                readerViewAMQP.getBirthDate(),
+                readerViewAMQP.getPhoneNumber(),
+                readerViewAMQP.isGdpr(),
+                readerViewAMQP.isMarketing(),
+                readerViewAMQP.isThirdParty(),
                 null,
                 null);
 

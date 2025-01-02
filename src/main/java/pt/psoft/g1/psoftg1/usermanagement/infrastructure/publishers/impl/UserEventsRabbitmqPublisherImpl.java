@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.usermanagement.api.UserViewAMQP;
 import pt.psoft.g1.psoftg1.usermanagement.api.UserViewAMQPMapper;
@@ -19,6 +20,7 @@ public class UserEventsRabbitmqPublisherImpl implements UserEventsPublisher {
     @Autowired
     private RabbitTemplate template;
     @Autowired
+    @Qualifier("directExchangeUsers")
     private DirectExchange direct;
 
     private final UserViewAMQPMapper userViewAMQPMapper;

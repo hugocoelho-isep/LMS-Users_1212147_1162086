@@ -16,6 +16,7 @@ public abstract class ReaderViewAMQPMapper {
 //    @Named(value = "toReaderView")
     @Mapping(target = "fullName", source = "reader.name.name")
     @Mapping(target = "username", source = "reader.username")
+    @Mapping(target = "userId", source = "reader.id")
     @Mapping(target = "birthDate", source = "birthDate.birthDate")
     @Mapping(target = "phoneNumber", source = "phoneNumber")
     @Mapping(target = "gdpr", source = "gdprConsent")
@@ -30,6 +31,7 @@ public abstract class ReaderViewAMQPMapper {
 
     @Mapping(target = "fullName", source = "reader.name.name")
     @Mapping(target = "username", source = "reader.username")
+    @Mapping(target = "userId", source = "reader.id")
     @Mapping(target = "birthDate", source = "readerDetails.birthDate.birthDate")
     @Mapping(target = "phoneNumber", source = "readerDetails.phoneNumber")
     @Mapping(target = "gdpr", source = "readerDetails.gdprConsent")

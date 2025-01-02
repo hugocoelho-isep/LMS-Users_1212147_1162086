@@ -24,6 +24,10 @@ public class ReaderViewAMQP {
     private Long version;
 
     @NotBlank
+    @NonNull
+    private Long userId;
+
+    @NotBlank
     @Email
     @NonNull
     private String username;
