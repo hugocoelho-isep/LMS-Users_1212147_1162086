@@ -2,14 +2,13 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * The {@code Lending} class associates a {@code Reader} and a {@code Book}.
@@ -53,6 +52,10 @@ public class Lending {
 //    @Getter
 //    @ManyToOne(fetch=FetchType.EAGER, optional = false)
 //    private Book book;
+    @NotNull
+    @Getter
+    @Setter
+    private String isbn;
 
     /**
      * {@code Reader} associated with this {@code Lending}.
@@ -71,14 +74,6 @@ public class Lending {
     @Getter
     private LocalDate startDate;
 
-    /**
-     * Date this {@code Lending} is to be returned.
-     * */
-    @NotNull
-    @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    @Getter
-    private LocalDate limitDate;
 
     /**
      * Date this {@code Lending} is actually returned. This field is initialized as {@code null}
@@ -97,22 +92,29 @@ public class Lending {
     @Getter
     private long version;
 
-    /**
-     * Optional commentary written by a reader when the book is returned.
-     * This field is initialized as null as the lending can never begin with the book already returned
-     * */
-    @Size(min = 0, max = 1024)
-    @Column(length = 1024)
-    private String commentary = null;
 
-    @Transient
-    private Integer daysUntilReturn;
 
-    @Transient
-    private Integer daysOverdue;
+    /**Factory method meant to be only used in bootstrapping.*/
+    public static Lending newBootstrappingLending(String book,
+                                                  ReaderDetails readerDetails,
+                                                  int year,
+                                                  int seq,
+                                                  LocalDate startDate,
+                                                  LocalDate returnedDate){
+        Lending lending = new Lending();
 
-    @Getter
-    private int fineValuePerDayInCents;
+        try {
+            lending.isbn = book;
+            lending.readerDetails = Objects.requireNonNull(readerDetails);
+        }catch (NullPointerException e){
+            throw new IllegalArgumentException("Null objects passed to lending");
+        }
+        lending.lendingNumber = new LendingNumber(year, seq);
+        lending.startDate = startDate;
+        lending.returnedDate = returnedDate;
+        return lending;
+
+    }
 
 
     /**
@@ -160,63 +162,9 @@ public class Lending {
         if (this.version != desiredVersion)
             throw new StaleObjectStateException("Object was already modified by another user", this.pk);
 
-        if(commentary != null)
-            this.commentary = commentary;
-
         this.returnedDate = LocalDate.now();
     }
 
-    /**
-     * <p>Returns the number of days that the lending is/was past its due date</p>
-     * @return      If the book was returned on time, or there is still time for it be returned, returns 0.
-     * If the book has been returned with delay, returns the number of days of delay.
-     * If the book has not been returned, returns the number of days
-     * past its limit date.
-     */
-    public int getDaysDelayed(){
-        if(this.returnedDate != null) {
-            return Math.max((int) ChronoUnit.DAYS.between(this.limitDate, this.returnedDate), 0);
-        }else{
-            return Math.max((int) ChronoUnit.DAYS.between(this.limitDate, LocalDate.now()), 0);
-        }
-    }
-
-    private void setDaysUntilReturn(){
-        int daysUntilReturn = (int) ChronoUnit.DAYS.between(LocalDate.now(), this.limitDate);
-        if(this.returnedDate != null || daysUntilReturn < 0){
-            this.daysUntilReturn = null;
-        }else{
-            this.daysUntilReturn = daysUntilReturn;
-        }
-    }
-
-    private void setDaysOverdue(){
-        int days = getDaysDelayed();
-        if(days > 0){
-            this.daysOverdue = days;
-        }else{
-            this.daysOverdue = null;
-        }
-    }
-
-    public Optional<Integer> getDaysUntilReturn() {
-        setDaysUntilReturn();
-        return Optional.ofNullable(daysUntilReturn);
-    }
-
-    public Optional<Integer> getDaysOverdue() {
-        setDaysOverdue();
-        return Optional.ofNullable(daysOverdue);
-    }
-
-    public Optional<Integer> getFineValueInCents() {
-        Optional<Integer> fineValueInCents = Optional.empty();
-        int days = getDaysDelayed();
-        if(days > 0){
-            fineValueInCents = Optional.of(fineValuePerDayInCents * days);
-        }
-        return fineValueInCents;
-    }
 
 //    public String getTitle(){
 //        return this.book.getTitle().toString();
